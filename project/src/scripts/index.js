@@ -69,8 +69,10 @@ function handleNewCardSubmit(evt) {
     { name: newTitle, link: newUrl },
     removeCard,
     addLike,
-    openModal
+    openImage
   );
+
+  const cardImage = cardElement.querySelector(".card__image");
   placesList.prepend(cardElement);
 
   closeModal(newCardPopUP);

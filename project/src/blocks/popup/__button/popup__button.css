@@ -14,9 +14,27 @@
   margin-top: 48px;
 }
 
+.popup__button-delete {
+  margin-top: 38px;
+}
+
 .popup__button:hover {
   background: rgba(0, 0, 0, 0.8);
   cursor: pointer;
+}
+
+.popup__button_disabled {
+  border: 1px rgba(0, 0, 0, 0.2) solid;
+  color: rgba(0, 0, 0, 0.2);
+  background: white;
+  transition: visibility 0s, background 0.3s;
+}
+
+.popup__button_disabled:hover {
+  border: 1px rgba(0, 0, 0, 0.2) solid;
+  color: rgba(0, 0, 0, 0.2);
+  background: white;
+  cursor: none;
 }
 
 @media screen and (max-width: 568px) {

@@ -9,6 +9,27 @@
   margin: 0 29px 0 0;
 }
 
+.profile__image::after {
+  content: '';
+  display: block;
+  background:  rgba(0, 0, 0, 0.7) url(../../../images/edit-icon.svg) no-repeat center;
+  background-size: 26px;
+  block-size: 100%;
+  inline-size: 100%;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.avatar_button {
+  background-color: transparent;
+  border: none;
+}
+
+.profile__image:hover::after {
+  opacity: 1;
+}
+
 @media screen and (max-width: 740px) {
   .profile__image {
     margin: 0 10px 0 0;

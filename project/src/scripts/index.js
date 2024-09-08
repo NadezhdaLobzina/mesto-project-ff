@@ -65,13 +65,24 @@ const validationConfig = {
   errorClass: "popup__error_visible",
 };
 
-// получение данных профиля
-getProfileData()
-  .then((result) => {
-    profileImage.style.backgroundImage = `url('${result.avatar}')`;
-    profileTitle.textContent = result.name;
-    profileDescription.textContent = result.about;
-    profileID = result._id;
+// Загрузка данных профиля и карточек
+Promise.all([getProfileData(), getCardsFromServer()])
+  .then(([profileData, cardData]) => {
+    profileImage.style.backgroundImage = `url('${profileData.avatar}')`;
+    profileTitle.textContent = profileData.name;
+    profileDescription.textContent = profileData.about;
+    profileID = profileData._id;
+
+    cardData.forEach((cardData) => {
+      const cardElement = createCard(
+        cardData,
+        profileID,
+        handleDeleteButtonClick,
+        handleLikeButton,
+        openImage
+      );
+      placesList.append(cardElement);
+    });
   })
   .catch((err) => {
     console.log(err);
@@ -85,16 +96,18 @@ function handleProfileFormSubmit(evt) {
   const originalButtonText = submitButton.textContent;
   submitButton.textContent = "Сохранение...";
 
-  profileTitle.textContent = nameInput.value;
-  profileDescription.textContent = jobInput.value;
-
-  patchProfile(
-    profileTitle.textContent,
-    profileDescription.textContent
-  ).finally(() => {
-    submitButton.textContent = originalButtonText;
-    evt.target.addEventListener("click", handleProfileFormSubmit);
-  });
+  patchProfile(nameInput.value, jobInput.value)
+    .then((result) => {
+      profileTitle.textContent = result.name;
+      profileDescription.textContent = result.about;
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally(() => {
+      submitButton.textContent = originalButtonText;
+      closeModal(editPopUP);
+    });
 }
 
 // функция редактирования аватара
@@ -115,6 +128,7 @@ function handleAvatarFormSubmit(evt) {
     })
     .finally(() => {
       submitButton.textContent = originalButtonText;
+      closeModal(editAvatarPopup);
     });
 }
 
@@ -145,16 +159,21 @@ function handleNewCardSubmit(evt) {
     })
     .finally(() => {
       submitButton.textContent = originalButtonText;
+      closeModal(newCardPopUP);
     });
 }
 
 // функция обработки нажатия лайка
 const handleLikeButton = (cardId, button, likes) => {
   if (button.classList.contains("card__like-button_is-active")) {
-    removeLike(cardId).then((result) => {
-      likes.textContent = result.likes.length;
-      button.classList.toggle("card__like-button_is-active");
-    });
+    removeLike(cardId)
+      .then((result) => {
+        likes.textContent = result.likes.length;
+        button.classList.toggle("card__like-button_is-active");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   } else {
     addNewLike(cardId)
       .then((result) => {
@@ -211,33 +230,6 @@ function handleAddButtonClick() {
   openModal(newCardPopUP);
   clearValidation(newCardPopUP, validationConfig);
 }
-
-// функция загрузки карточек с сервера
-getCardsFromServer()
-  .then((result) => {
-    const cardPromises = result.map((cardData) => {
-      return new Promise((resolve) => {
-        const cardElement = createCard(
-          cardData,
-          profileID,
-          handleDeleteButtonClick,
-          handleLikeButton,
-          openImage
-        );
-        resolve(cardElement);
-      });
-    });
-
-    return Promise.all(cardPromises);
-  })
-  .then((cardElements) => {
-    cardElements.forEach((cardElement) => {
-      placesList.append(cardElement);
-    });
-  })
-  .catch((err) => {
-    console.log(err);
-  });
 
 // функция проверки формы на ошибки
 enableValidation(validationConfig);

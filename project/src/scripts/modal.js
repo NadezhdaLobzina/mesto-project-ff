@@ -2,8 +2,7 @@
 function handlePopupClick(evt) {
   if (
     evt.target.classList.contains("popup__close") ||
-    evt.target.classList.contains("popup") ||
-    evt.target.classList.contains("popup__button")
+    evt.target.classList.contains("popup")
   ) {
     const activePopup = document.querySelector(".popup_is-opened");
     if (activePopup) {

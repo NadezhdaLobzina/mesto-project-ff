@@ -100,13 +100,13 @@ function handleProfileFormSubmit(evt) {
     .then((result) => {
       profileTitle.textContent = result.name;
       profileDescription.textContent = result.about;
+      closeModal(editPopUP);
     })
     .catch((err) => {
       console.log(err);
     })
     .finally(() => {
       submitButton.textContent = originalButtonText;
-      closeModal(editPopUP);
     });
 }
 
@@ -122,13 +122,13 @@ function handleAvatarFormSubmit(evt) {
   changeAvatar(newAvatar)
     .then((result) => {
       profileImage.style.backgroundImage = url("${result.avatar}");
+      closeModal(editAvatarPopup);
     })
     .catch((err) => {
       console.log(err);
     })
     .finally(() => {
       submitButton.textContent = originalButtonText;
-      closeModal(editAvatarPopup);
     });
 }
 
@@ -153,13 +153,13 @@ function handleNewCardSubmit(evt) {
         openImage
       );
       placesList.prepend(cardElement);
+      closeModal(newCardPopUP);
     })
     .catch((err) => {
       console.log(err);
     })
     .finally(() => {
       submitButton.textContent = originalButtonText;
-      closeModal(newCardPopUP);
     });
 }
 
